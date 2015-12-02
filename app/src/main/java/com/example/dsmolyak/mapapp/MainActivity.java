@@ -8,10 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.*;
 
 public class MainActivity extends AppCompatActivity {
+
+    TextView text;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TextView text = (TextView) findViewById(R.id.textView);
+        text = (TextView) findViewById(R.id.textView);
+        image = (ImageView) findViewById(R.id.imageView1);
+        //image.setImageResource(R.drawable.ahs_map1);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -30,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 text.setText("Clicked");
 
+
             }
         });
+
+
 
 
 
