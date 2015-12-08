@@ -22,33 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        text = (TextView) findViewById(R.id.textView);
         image = (ImageView) findViewById(R.id.imageView1);
-        //image.setImageResource(R.drawable.ahs_map1);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Fight me", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                text.setText("Clicked");
 
 
-            }
-        });
-
-
-
-
-
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                button.setText("Cool!");
-
-            }
-        });
     }
 
     @Override
