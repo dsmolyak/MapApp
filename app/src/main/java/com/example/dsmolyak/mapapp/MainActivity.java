@@ -26,6 +26,37 @@ public class MainActivity extends AppCompatActivity {
 
 
         final ArrayList<Button> classrooms = new ArrayList<>();
+
+        classrooms.add((Button)findViewById(R.id.A100));
+        classrooms.add((Button)findViewById(R.id.A101));
+        classrooms.add((Button)findViewById(R.id.A102));
+        classrooms.add((Button)findViewById(R.id.A103));
+        classrooms.add((Button)findViewById(R.id.A104));
+        classrooms.add((Button)findViewById(R.id.A105));
+        classrooms.add((Button)findViewById(R.id.A106));
+        classrooms.add((Button)findViewById(R.id.A107));
+        classrooms.add((Button)findViewById(R.id.A108));
+        classrooms.add((Button)findViewById(R.id.A109));
+        classrooms.add((Button)findViewById(R.id.A110));
+        classrooms.add((Button)findViewById(R.id.A111));
+        classrooms.add((Button)findViewById(R.id.A112));
+        classrooms.add((Button)findViewById(R.id.A113));
+
+        classrooms.add((Button)findViewById(R.id.B114));
+        classrooms.add((Button)findViewById(R.id.B115));
+        classrooms.add((Button)findViewById(R.id.B116));
+        classrooms.add((Button)findViewById(R.id.B117));
+        classrooms.add((Button)findViewById(R.id.B118));
+        classrooms.add((Button)findViewById(R.id.B119));
+        classrooms.add((Button)findViewById(R.id.B120));
+        classrooms.add((Button)findViewById(R.id.B121));
+        classrooms.add((Button)findViewById(R.id.B122));
+        classrooms.add((Button)findViewById(R.id.B123));
+        classrooms.add((Button)findViewById(R.id.B124));
+        classrooms.add((Button)findViewById(R.id.B125));
+        classrooms.add((Button)findViewById(R.id.B126));
+        classrooms.add((Button)findViewById(R.id.B127));
+
         classrooms.add((Button)findViewById(R.id.C128));
         classrooms.add((Button)findViewById(R.id.C129));
         classrooms.add((Button)findViewById(R.id.C130));
@@ -56,14 +87,52 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.C155));
         classrooms.add((Button)findViewById(R.id.C156));
 
-//        boolean[] clicked = new boolean[29];
+        classrooms.add((Button)findViewById(R.id.D157));
+        classrooms.add((Button)findViewById(R.id.D158));
+        classrooms.add((Button)findViewById(R.id.D159));
+        classrooms.add((Button)findViewById(R.id.D160));
+        classrooms.add((Button)findViewById(R.id.D161));
+        classrooms.add((Button)findViewById(R.id.D162));
+        classrooms.add((Button)findViewById(R.id.D163));
+        classrooms.add((Button)findViewById(R.id.D164));
+        classrooms.add((Button)findViewById(R.id.D165));
+        classrooms.add((Button)findViewById(R.id.D166));
+        classrooms.add((Button)findViewById(R.id.D167));
+        classrooms.add((Button)findViewById(R.id.D168));
+        classrooms.add((Button)findViewById(R.id.D169));
+        classrooms.add((Button)findViewById(R.id.D170));
 
-        for (int i = 0; i < 29; i++) {
+        classrooms.add((Button)findViewById(R.id.E171));
+        classrooms.add((Button)findViewById(R.id.E172));
+        classrooms.add((Button)findViewById(R.id.E173));
+        classrooms.add((Button)findViewById(R.id.E174));
+        classrooms.add((Button)findViewById(R.id.E175));
+        classrooms.add((Button)findViewById(R.id.E176));
+        classrooms.add((Button)findViewById(R.id.E177));
+
+        classrooms.add((Button)findViewById(R.id.F178));
+        classrooms.add((Button)findViewById(R.id.F179));
+        classrooms.add((Button)findViewById(R.id.F180));
+        classrooms.add((Button)findViewById(R.id.F181));
+        classrooms.add((Button)findViewById(R.id.F182));
+        classrooms.add((Button)findViewById(R.id.F183));
+        classrooms.add((Button)findViewById(R.id.F184));
+        classrooms.add((Button)findViewById(R.id.F186));
+        classrooms.add((Button)findViewById(R.id.F187));
+        classrooms.add((Button)findViewById(R.id.F188));
+        classrooms.add((Button)findViewById(R.id.F189));
+        classrooms.add((Button)findViewById(R.id.F190));
+
+
+
+
+
+        for (int i = 0; i < classrooms.size(); i++) {
             final int j = i;
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    classrooms.get(j).setBackgroundColor(Color.GREEN);
+                    classrooms.get(j).setBackgroundColor(Color.LTGRAY);
                 }
             });
         }
