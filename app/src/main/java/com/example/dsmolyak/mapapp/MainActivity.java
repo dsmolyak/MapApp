@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ImageView image;
+    ScaleGestureDetector SGD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         image = (ImageView) findViewById(R.id.imageView1);
 
+
+        SGD = new ScaleGestureDetector(this,new ScaleListener());
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -156,9 +161,39 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            System.out.println("settings");
             return true;
         }
 
+        if (id == R.id.second_floor) {
+            System.out.println("second floor");
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onTouchEvent(MotionEvent ev) {
+        SGD.onTouchEvent(ev);
+        return true;
+    }
+
+
+    private class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            float scale = detector.getScaleFactor();
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return false;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+
+        }
     }
 }
