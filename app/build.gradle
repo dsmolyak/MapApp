@@ -24,4 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile files('libs/opencsv-3.6.jar')
+    compile files('libs/javax.servlet-api-3.1.0.jar')
+    compile files('libs/google-api-services-drive-v2-rev194-1.21.0.jar')
 }
