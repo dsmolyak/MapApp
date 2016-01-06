@@ -27,4 +27,12 @@ dependencies {
     compile files('libs/opencsv-3.6.jar')
     compile files('libs/javax.servlet-api-3.1.0.jar')
     compile files('libs/google-api-services-drive-v2-rev194-1.21.0.jar')
+    compile files('libs/commons-logging-1.1.1.jar')
+    compile files('libs/google-api-client-1.21.0.jar')
+    compile files('libs/google-api-client-android-1.21.0.jar')
+    compile files('libs/google-api-client-appengine-1.21.0.jar')
+    compile files('libs/google-api-client-gson-1.21.0.jar')
+    compile files('libs/google-api-client-jackson2-1.21.0.jar')
+    compile files('libs/google-api-client-java6-1.21.0.jar')
+    compile files('libs/google-api-client-servlet-1.21.0.jar')
 }
