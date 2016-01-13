@@ -1,6 +1,8 @@
 package com.example.dsmolyak.mapapp;
 
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +29,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         image = (ImageView) findViewById(R.id.imageView1);
+        Drawable image1 = getResources().getDrawable(R.drawable.ahs_map1);
+
+        Zoom zoom = new Zoom(this, image1);
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -120,11 +131,7 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.F187));
         classrooms.add((Button)findViewById(R.id.F188));
         classrooms.add((Button)findViewById(R.id.F189));
-        classrooms.add((Button)findViewById(R.id.F190));
-
-
-
-
+        classrooms.add((Button) findViewById(R.id.F190));
 
         for (int i = 0; i < classrooms.size(); i++) {
             final int j = i;
@@ -136,9 +143,21 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+//        InputStream in = OpenotherFileDialog();
+//        File file = new File(in);
+//        DriveConnect.connect(OpenFileDialog());
 
     }
-
+    public InputStream OpenFileDialog(){
+        Resources res = this.getResources();
+        InputStream in = res.openRawResource(R.raw.client_secret);
+        return in;
+    }
+    public InputStream OpenotherFileDialog(){
+        Resources res = this.getResources();
+        InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
+        return in;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -165,5 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 }
