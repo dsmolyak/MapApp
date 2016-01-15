@@ -1,11 +1,13 @@
 package com.example.dsmolyak.mapapp;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,19 +23,41 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ImageView image;
+    PopupWindow popUp;
+    LinearLayout layout;
+    TextView tv;
+    LinearLayout.LayoutParams params;
+    LinearLayout mainLayout;
+    boolean click = true;
+    TextView textview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        popUp = new PopupWindow(this);
+//        layout = new LinearLayout(this);
+////        mainLayout = new LinearLayout(this);
+//        tv = new TextView(this);
+//
+//        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT);
+//        layout.setOrientation(LinearLayout.VERTICAL);
+//        tv.setText("Hi this is a sample text for popup window");
+//        layout.addView(tv, params);
+//        popUp.setContentView(layout);
+//        // popUp.showAtLocation(layout, Gravity.BOTTOM, 10, 10);
+////        setContentView(mainLayout);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        image = (ImageView) findViewById(R.id.imageView1);
-        Drawable image1 = getResources().getDrawable(R.drawable.ahs_map1);
+//        image = (ImageView) findViewById(R.id.imageView1);
+//        Drawable image1 = getResources().getDrawable(R.drawable.ahs_map1);
 
-        Zoom zoom = new Zoom(this, image1);
+//        Zoom zoom = new Zoom(this, image1);
+
+        textview = (TextView) findViewById(R.id.textView);
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -139,6 +163,15 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     classrooms.get(j).setBackgroundColor(Color.LTGRAY);
+                    textview.setText((j + 100) + "");
+//                    if (click) {
+//                        popUp.showAtLocation(mainLayout, Gravity.BOTTOM, 10, 10);
+//                        popUp.update(50, 50, 300, 80);
+//                        click = false;
+//                    } else {
+//                        popUp.dismiss();
+//                        click = true;
+//                    }
                 }
             });
         }
