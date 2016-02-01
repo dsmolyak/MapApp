@@ -28,6 +28,12 @@ import com.google.api.services.drive.model.FileList;
 import com.opencsv.CSVReader;
 public class DriveConnect extends AsyncTask<FileWrapper,Void,Void> {
 
+	protected RoomHandler roomHandler=null;
+
+	public RoomHandler getRoomHandler(){
+			return roomHandler;
+	}
+
 	@Override
 	protected Void doInBackground(FileWrapper... fis) {
 		try {
@@ -81,11 +87,7 @@ public class DriveConnect extends AsyncTask<FileWrapper,Void,Void> {
 								rh.addRoom(new Room(nextLine[0], hash));
 							}
 							rh.setSuperHash(superHash);
-							System.out.println("Teachers");
-							String[] array = rh.getTeachersInRoom("B126");
-							for(String str: array){
-								System.out.println(str);
-							}
+							roomHandler=rh;
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
