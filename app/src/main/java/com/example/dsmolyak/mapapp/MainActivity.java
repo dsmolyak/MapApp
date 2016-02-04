@@ -6,20 +6,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import com.google.api.client.util.IOUtils;
+import android.widget.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -146,8 +144,9 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        DriveConnect dc= new DriveConnect();
-        dc.execute(new FileWrapper(OpenFileDialog(),OpenotherFileDialog()));
+//        InputStream in = OpenotherFileDialog();
+//        File file = new File(in);
+//        DriveConnect.connect(OpenFileDialog());
 
     }
     public InputStream OpenFileDialog(){
@@ -155,22 +154,10 @@ public class MainActivity extends AppCompatActivity {
         InputStream in = res.openRawResource(R.raw.client_secret);
         return in;
     }
-    public File OpenotherFileDialog(){
-        try {
-            Resources res = this.getResources();
-            InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
-
-            final File tempFile = File.createTempFile("my_project_10bcd65a0234", ".p12");
-            tempFile.deleteOnExit();
-            FileOutputStream out = new FileOutputStream(tempFile);
-            IOUtils.copy(in, out);
-            return tempFile;
-
-        }
-        catch(IOException e){
-            System.out.println(e);
-            return null;
-        }
+    public InputStream OpenotherFileDialog(){
+        Resources res = this.getResources();
+        InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
+        return in;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
