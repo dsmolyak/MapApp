@@ -6,6 +6,7 @@ package com.example.dsmolyak.mapapp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -17,9 +18,8 @@ public class Zoom extends View {
     ImageButton img,img1;
     private int zoomControler=20;
 
-    public Zoom(Context context, Drawable image){
-        super(context);
-        this.image = image;
+    public Zoom(Context context, AttributeSet attributeSet){
+        super(context, attributeSet);
 
         setFocusable(true);
     }

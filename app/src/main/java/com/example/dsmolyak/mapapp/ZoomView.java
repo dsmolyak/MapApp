@@ -19,8 +19,8 @@ public class ZoomView extends View {
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
 
-    public ZoomView(Context context) {
-        super(context);
+    public ZoomView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
         detector = new ScaleGestureDetector(getContext(), new ScaleListener());
     }
 

@@ -1,16 +1,25 @@
 package com.example.dsmolyak.mapapp;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.*;
+
+import com.opencsv.stream.reader.LineReader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView image;
 
+    //The "x" and "y" position of the "Show Button" on screen.
+
+    ArrayList<Button> buttons;
+    ArrayList<Point> points;
+
+    int size;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         image = (ImageView) findViewById(R.id.imageView1);
-        Drawable image1 = getResources().getDrawable(R.drawable.ahs_map1);
 
-        Zoom zoom = new Zoom(this, image1);
+        TextView tv = new TextView(this);
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -134,27 +149,117 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.F189));
         classrooms.add((Button) findViewById(R.id.F190));
 
+        int size = classrooms.size();
+        buttons = classrooms;
+
+        final ArrayList<Boolean> colored = new ArrayList<Boolean>();
+        for (int i = 0; i < size; i++) {
+            colored.add(true);
+        }
+
         for (int i = 0; i < classrooms.size(); i++) {
             final int j = i;
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    classrooms.get(j).setBackgroundColor(Color.LTGRAY);
+                    if (colored.get(j)) {
+                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
+                    }
+                    else {
+                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                    colored.set(j, !colored.get(j));
+
+
+                    //Open popup window
+                    if (points.get(j) != null) {
+                        showPopup(MainActivity.this, points.get(j), j);
+                    }
+
                 }
             });
         }
 
+//        DriveConnect dc= new DriveConnect();
+//        dc.execute(new FileWrapper(OpenFileDialog(),new File(OpenPTwelveSecret())));
 //        InputStream in = OpenotherFileDialog();
 //        File file = new File(in);
 //        DriveConnect.connect(OpenFileDialog());
 
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+        int[] location = new int[2];
+
+        points = new ArrayList<Point>();
+
+
+        for (Button button : buttons) {
+            // Get the x, y location and store it in the location[] array
+            // location[0] = x, location[1] = y.
+            button.getLocationOnScreen(location);
+
+            //Initialize the Point with x, and y positions
+            Point p = new Point();
+            p.x = location[0];
+            p.y = location[1];
+            points.add(p);
+        }
+
+    }
+
+    private void showPopup(final Activity context, Point p, int j) {
+        int popupWidth = 500;
+        int popupHeight = 375;
+
+        String id = convertToId(j);
+
+        // Inflate the popup_layout.xml
+        LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
+        LayoutInflater layoutInflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
+
+        // Creating the PopupWindow
+        final PopupWindow popup = new PopupWindow(context);
+        popup.setContentView(layout);
+        popup.setWidth(popupWidth);
+        popup.setHeight(popupHeight);
+        popup.setFocusable(true);
+
+        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
+        int OFFSET_X = -170;
+        int OFFSET_Y = 85;
+
+        // Clear the default translucent background
+        popup.setBackgroundDrawable(new BitmapDrawable());
+
+        // Displaying the popup at the specified location, + offsets.
+        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+
+        // Getting a reference to Close button, and close the popup when clicked.
+        Button close = (Button) layout.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+            }
+        });
+    }
+
+    private String convertToId(int j) {
+        return null;
+    }
+
     public InputStream OpenFileDialog(){
         Resources res = this.getResources();
         InputStream in = res.openRawResource(R.raw.client_secret);
         return in;
     }
-    public InputStream OpenotherFileDialog(){
+    public InputStream OpenPTwelveSecret(){
         Resources res = this.getResources();
         InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
         return in;
@@ -181,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.second_floor) {
             System.out.println("second floor");
+            Intent second = new Intent(this, SecondActivity.class);
+            startActivity(second);
         }
 
         return super.onOptionsItemSelected(item);
