@@ -17,16 +17,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.*;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.opencsv.stream.reader.LineReader;
 
+import com.google.api.client.util.IOUtils;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -180,11 +184,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-//        DriveConnect dc= new DriveConnect();
-//        dc.execute(new FileWrapper(OpenFileDialog(),new File(OpenPTwelveSecret())));
-//        InputStream in = OpenotherFileDialog();
-//        File file = new File(in);
-//        DriveConnect.connect(OpenFileDialog());
+        DriveConnect dc= new DriveConnect();
+        dc.execute(new FileWrapper(OpenFileDialog(),OpenotherFileDialog()));
 
     }
 
@@ -259,10 +260,22 @@ public class MainActivity extends AppCompatActivity {
         InputStream in = res.openRawResource(R.raw.client_secret);
         return in;
     }
-    public InputStream OpenPTwelveSecret(){
-        Resources res = this.getResources();
-        InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
-        return in;
+    public File OpenotherFileDialog(){
+        try {
+            Resources res = this.getResources();
+            InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
+
+            final File tempFile = File.createTempFile("my_project_10bcd65a0234", ".p12");
+            tempFile.deleteOnExit();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            IOUtils.copy(in, out);
+            return tempFile;
+
+        }
+        catch(IOException e){
+            System.out.println(e);
+            return null;
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
