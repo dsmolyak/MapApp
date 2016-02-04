@@ -9,7 +9,9 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main" tools:context=".MainActivity">
 
+    <SearchView>
 
+    </SearchView>
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
