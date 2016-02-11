@@ -30,10 +30,6 @@ public class DriveConnect extends AsyncTask<FileWrapper,Void,Void> {
 
 	protected RoomHandler roomHandler=null;
 
-	public RoomHandler getRoomHandler(){
-			return roomHandler;
-	}
-
 	@Override
 	protected Void doInBackground(FileWrapper... fis) {
 		try {
@@ -100,6 +96,9 @@ public class DriveConnect extends AsyncTask<FileWrapper,Void,Void> {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public RoomHandler getRoomHandler(){
+		return roomHandler;
 	}
 
 }

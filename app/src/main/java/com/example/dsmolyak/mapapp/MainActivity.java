@@ -7,9 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -17,11 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
-import com.opencsv.stream.reader.LineReader;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.google.api.client.util.IOUtils;
 
@@ -30,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<Button> buttons;
     ArrayList<Point> points;
+    DriveConnect dc=null;
 
     int size;
 
@@ -184,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        DriveConnect dc= new DriveConnect();
+        dc= new DriveConnect();
         dc.execute(new FileWrapper(OpenFileDialog(),OpenotherFileDialog()));
 
     }
@@ -217,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
 
         String id = convertToId(j);
 
+
+
         // Inflate the popup_layout.xml
         LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
         LayoutInflater layoutInflater = (LayoutInflater) context
@@ -229,6 +229,16 @@ public class MainActivity extends AppCompatActivity {
         popup.setWidth(popupWidth);
         popup.setHeight(popupHeight);
         popup.setFocusable(true);
+
+        TextView classInfo = (TextView) findViewById(R.id.textView2);
+        System.out.println(dc);
+        String info="";
+        for(String inf: dc.getRoomHandler().getTeachersInRoom(id)){
+            info= info+inf;
+            System.out.println(info);
+        }
+        System.out.println(classInfo.getText());
+        classInfo.setText(info);
 
         // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
         int OFFSET_X = -170;
@@ -252,7 +262,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String convertToId(int j) {
-        return null;
+        j = j + 100;
+        String result = j + "";
+        if (j >= 100 && j <= 113) {
+            result = 'A' + result;
+        }
+        else if (j >= 114 && j <= 127) {
+            result = 'B' + result;
+        }
+        else if (j >= 128 && j <= 156) {
+            result = 'C' + result;
+        }
+        else if (j >= 157 && j <= 170) {
+            result = 'D' + result;
+        }
+        else if (j >= 171 && j <= 177) {
+            result = 'E' + result;
+        }
+        else if (j >= 178 && j <= 190) {
+            result = 'F' + result;
+        }
+
+        return result;
     }
 
     public InputStream OpenFileDialog(){
