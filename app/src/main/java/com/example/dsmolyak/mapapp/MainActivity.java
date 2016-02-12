@@ -237,9 +237,9 @@ public class MainActivity extends AppCompatActivity {
             info= info+inf;
             System.out.println(info);
         }
-        System.out.println(classInfo.getText());
-        classInfo.setText(info);
 
+        //classInfo.setText(info);
+        //System.out.println(classInfo.getText());
         // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
         int OFFSET_X = -170;
         int OFFSET_Y = 85;
