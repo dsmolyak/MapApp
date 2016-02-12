@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:id="@+id/popup"
     android:layout_height="wrap_content"
-    android:background="@drawable/popup_bg"
+    android:background="@drawable/popup_bg_9"
     android:orientation="vertical" >
 
     <TextView
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Popup"
+        android:textColor="#00FF00"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -19,6 +20,8 @@
         android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#00FF00"
         android:text="This is a simple popup" />
 
     <Button

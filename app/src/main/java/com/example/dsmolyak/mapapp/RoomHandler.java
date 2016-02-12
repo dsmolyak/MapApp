@@ -17,10 +17,13 @@ public class RoomHandler {
 	public String[] getTeachersInRoom(String roomNumber){
 
 		Room rm = roomsToNumberMap.get(roomNumber);
+		if (rm == null) {
+			return null;
+		}
 
 		String[] strs= new String[7];
-		for(int x =0; x<strs.length; x++){
-			strs[x]=rm.getTeacherAtPeriod(x+1);
+		for (int i = 0; i < strs.length; i++) {
+			strs[i] = rm.getTeacherAtPeriod(i + 1);
 		}
 		return strs;
 	}

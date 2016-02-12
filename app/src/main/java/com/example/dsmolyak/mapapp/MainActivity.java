@@ -230,15 +230,7 @@ public class MainActivity extends AppCompatActivity {
         popup.setHeight(popupHeight);
         popup.setFocusable(true);
 
-        TextView classInfo = (TextView) findViewById(R.id.textView2);
-        System.out.println(dc);
-        String info="";
-        for(String inf: dc.getRoomHandler().getTeachersInRoom(id)){
-            info= info+inf;
-            System.out.println(info);
-        }
-        System.out.println(classInfo.getText());
-        classInfo.setText(info);
+
 
         // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
         int OFFSET_X = -170;
@@ -259,6 +251,26 @@ public class MainActivity extends AppCompatActivity {
                 popup.dismiss();
             }
         });
+
+        TextView classInfo = (TextView)popup.getContentView().findViewById(R.id.textView2);
+        StringBuilder info = new StringBuilder("");
+        System.out.println(classInfo.getText());
+        String[] teachers = dc.getRoomHandler().getTeachersInRoom(id);
+        if (teachers == null) {
+            classInfo.setText("Empty");
+        }
+        else {
+            for (int i = 0; i < teachers.length; i++) {
+                String teacher = teachers[i];
+                if (teacher == "" || teacher == null) {
+                    info.append("Period " + (i + 1) + ": Planning" + "\n");
+                }
+                else {
+                    info.append("Period " + (i + 1) + ": " + teacher + "\n");
+                }
+            }
+            classInfo.setText(info.toString());
+        }
     }
 
     private String convertToId(int j) {
@@ -336,7 +348,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 }
