@@ -231,16 +231,6 @@ public class MainActivity extends AppCompatActivity {
         popup.setHeight(popupHeight);
         popup.setFocusable(true);
 
-        TextView classInfo = (TextView) findViewById(R.id.textView2);
-        System.out.println(dc);
-        String info="";
-        for(String inf: dc.getRoomHandler().getTeachersInRoom(id)){
-            info= info+inf;
-            System.out.println(info);
-        }
-        System.out.println(classInfo.getText());
-        classInfo.setText(info);
-
         // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
         int OFFSET_X = -170;
         int OFFSET_Y = 85;
@@ -252,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
 
         // Getting a reference to Close button, and close the popup when clicked.
-        Button close = (Button) layout.findViewById(R.id.close);
+        ImageButton close = (ImageButton) layout.findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
 
             @Override
