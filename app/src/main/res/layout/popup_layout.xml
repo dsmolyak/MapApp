@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Popup"
+        android:textColor="#00FF00"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -31,6 +32,8 @@
         android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#00FF00"
         android:text="This is a simple popup" />
 
 </LinearLayout>

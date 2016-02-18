@@ -238,9 +238,9 @@ public class MainActivity extends AppCompatActivity {
             info= info+inf;
             System.out.println(info);
         }
+        System.out.println(classInfo.getText());
+        classInfo.setText(info);
 
-        //classInfo.setText(info);
-        //System.out.println(classInfo.getText());
         // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
         int OFFSET_X = -170;
         int OFFSET_Y = 85;
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
 
         // Getting a reference to Close button, and close the popup when clicked.
-        ImageButton close = (ImageButton) layout.findViewById(R.id.close);
+        Button close = (Button) layout.findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -260,6 +260,26 @@ public class MainActivity extends AppCompatActivity {
                 popup.dismiss();
             }
         });
+
+        TextView classInfo = (TextView)popup.getContentView().findViewById(R.id.textView2);
+        StringBuilder info = new StringBuilder("");
+        System.out.println(classInfo.getText());
+        String[] teachers = dc.getRoomHandler().getTeachersInRoom(id);
+        if (teachers == null) {
+            classInfo.setText("Empty");
+        }
+        else {
+            for (int i = 0; i < teachers.length; i++) {
+                String teacher = teachers[i];
+                if (teacher == "" || teacher == null) {
+                    info.append("Period " + (i + 1) + ": Planning" + "\n");
+                }
+                else {
+                    info.append("Period " + (i + 1) + ": " + teacher + "\n");
+                }
+            }
+            classInfo.setText(info.toString());
+        }
     }
 
     private String convertToId(int j) {
