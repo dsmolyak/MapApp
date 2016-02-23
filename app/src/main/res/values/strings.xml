@@ -4,4 +4,5 @@
     <string name="second_floor">Second Floor</string>
     <string name="first_floor">First Floor</string>
     <string name="title_activity_second">SecondActivity</string>
+    <string name="classroom_example">Period 1: Empty \n Period 2: Empty \n Period 3: Empty</string>
 </resources>

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<Button> buttons;
     ArrayList<Point> points;
-    DriveConnect dc=null;
+    DriveConnect dc;
 
     int size;
 
@@ -47,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-        image = (ImageView) findViewById(R.id.imageView1);
-
-        TextView tv = new TextView(this);
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -194,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
         points = new ArrayList<Point>();
 
-
         for (Button button : buttons) {
             // Get the x, y location and store it in the location[] array
             // location[0] = x, location[1] = y.
@@ -206,16 +200,15 @@ public class MainActivity extends AppCompatActivity {
             p.y = location[1];
             points.add(p);
         }
-
     }
 
     private void showPopup(final Activity context, Point p, int j) {
+
+
         int popupWidth = 500;
         int popupHeight = 375;
 
-        String id = convertToId(j);
-
-
+        String roomId = convertToId(j);
 
         // Inflate the popup_layout.xml
         LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
@@ -230,32 +223,13 @@ public class MainActivity extends AppCompatActivity {
         popup.setHeight(popupHeight);
         popup.setFocusable(true);
 
-
-
-        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-        int OFFSET_X = -170;
-        int OFFSET_Y = 85;
-
-        // Clear the default translucent background
-        popup.setBackgroundDrawable(new BitmapDrawable());
-
-        // Displaying the popup at the specified location, + offsets.
-        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
-
-        // Getting a reference to Close button, and close the popup when clicked.
-        Button close = (Button) layout.findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-            }
-        });
+        TextView title = (TextView)popup.getContentView().findViewById(R.id.textView1);
+        title.setText(roomId);
 
         TextView classInfo = (TextView)popup.getContentView().findViewById(R.id.textView2);
         StringBuilder info = new StringBuilder("");
         System.out.println(classInfo.getText());
-        String[] teachers = dc.getRoomHandler().getTeachersInRoom(id);
+        String[] teachers = dc.getRoomHandler().getTeachersInRoom(roomId);
         if (teachers == null) {
             classInfo.setText("Empty");
         }
@@ -271,6 +245,17 @@ public class MainActivity extends AppCompatActivity {
             }
             classInfo.setText(info.toString());
         }
+
+        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
+        int OFFSET_X = -170;
+        int OFFSET_Y = 85;
+
+        // Clear the default translucent background
+        popup.setBackgroundDrawable(new BitmapDrawable());
+
+        // Displaying the popup at the specified location, + offsets.
+        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+
     }
 
     private String convertToId(int j) {
@@ -320,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
