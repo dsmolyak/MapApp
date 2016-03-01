@@ -75,13 +75,13 @@ public class SecondActivity extends AppCompatActivity {
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (colored.get(j)) {
-                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
-                    }
-                    else {
-                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
-                    }
-                    colored.set(j, !colored.get(j));
+//                    if (colored.get(j)) {
+//                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
+//                    }
+//                    else {
+//                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
+//                    }
+//                    colored.set(j, !colored.get(j));
 
 
                     //Open popup window
@@ -173,7 +173,7 @@ public class SecondActivity extends AppCompatActivity {
         popup.setBackgroundDrawable(new BitmapDrawable());
 
         // Displaying the popup at the specified location, + offsets.
-        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+        popup.showAtLocation(layout, Gravity.NO_GRAVITY, 1100, 450);
 
     }
 
@@ -221,7 +221,7 @@ public class SecondActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             System.out.println("settings");
             return true;
         }

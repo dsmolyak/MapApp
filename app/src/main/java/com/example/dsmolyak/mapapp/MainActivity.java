@@ -160,13 +160,13 @@ public class MainActivity extends AppCompatActivity {
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (colored.get(j)) {
-                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
-                    }
-                    else {
-                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
-                    }
-                    colored.set(j, !colored.get(j));
+//                    if (colored.get(j)) {
+//                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
+//                    }
+//                    else {
+//                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
+//                    }
+//                    colored.set(j, !colored.get(j));
 
 
                     //Open popup window
@@ -247,15 +247,13 @@ public class MainActivity extends AppCompatActivity {
             classInfo.setText(info.toString());
         }
 
-        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-        int OFFSET_X = -170;
-        int OFFSET_Y = 85;
-
         // Clear the default translucent background
         popup.setBackgroundDrawable(new BitmapDrawable());
 
         // Displaying the popup at the specified location, + offsets.
-        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+        popup.showAtLocation(layout, Gravity.NO_GRAVITY, 700, 450);
+
+        System.out.println(p.x + " " + p.y);
 
     }
 
@@ -322,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             System.out.println("settings");
             return true;
         }

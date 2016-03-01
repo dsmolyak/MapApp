@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:id="@+id/popup"
     android:layout_height="wrap_content"
-    android:background="@drawable/popup_bg"
+    android:background="@drawable/stretched_pepper"
     android:orientation="vertical"
     android:weightSum="1">
 
