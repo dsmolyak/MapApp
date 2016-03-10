@@ -1,18 +1,22 @@
 package com.example.dsmolyak.mapapp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class RoomHandler {
 	private HashMap<String, Room> roomsToNumberMap;
+	private ArrayList<Room>allRooms;
 	private HashMap<String, String[]> superHash;
 	
 	public RoomHandler(){
 		roomsToNumberMap = new HashMap<String,Room>();
+		allRooms = new ArrayList<Room>();
 	}
 	public void addRoom(Room room) {
 
 		roomsToNumberMap.put(room.getRoomNumber(), room);
+		allRooms.add(room);
 	}
 	public String[] getTeachersInRoom(String roomNumber){
 
@@ -31,6 +35,10 @@ public class RoomHandler {
 		this.superHash= superHash;
 		
 	}
+	public ArrayList<Room> getAllRooms(){
+		return allRooms;
+	}
+
 	public String[] getRoomsOfTeacher(String teacher){
 		return superHash.get(teacher);
 	}

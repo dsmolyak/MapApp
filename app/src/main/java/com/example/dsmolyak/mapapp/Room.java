@@ -20,4 +20,7 @@ public class Room {
 		
 		return teachers.get(""+period);
 	}
+	public String toString(){
+		return getRoomNumber();
+	}
 }
