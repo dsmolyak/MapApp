@@ -1,26 +1,36 @@
 package com.example.dsmolyak.mapapp;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.FloatMath;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.client.util.IOUtils;
 
@@ -32,15 +42,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "tag";
     ImageView image;
+    SearchView searchView;
+    String searchString;
 
     //The "x" and "y" position of the "Show Button" on screen.
 
+    ArrayList<Button> prevSearch = new ArrayList<Button>();
+    ArrayList<Button> currSearch = new ArrayList<Button>();
     ArrayList<Button> buttons;
     ArrayList<Point> points;
     DriveConnect dc;
-
-    int size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
+// <editor-fold desc="Buttons">
         classrooms.add((Button)findViewById(R.id.A100));
         classrooms.add((Button)findViewById(R.id.A101));
         classrooms.add((Button)findViewById(R.id.A102));
@@ -65,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.A111));
         classrooms.add((Button)findViewById(R.id.A112));
         classrooms.add((Button)findViewById(R.id.A113));
-
         classrooms.add((Button)findViewById(R.id.B114));
         classrooms.add((Button)findViewById(R.id.B115));
         classrooms.add((Button)findViewById(R.id.B116));
@@ -80,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.B125));
         classrooms.add((Button)findViewById(R.id.B126));
         classrooms.add((Button)findViewById(R.id.B127));
-
         classrooms.add((Button)findViewById(R.id.C128));
         classrooms.add((Button)findViewById(R.id.C129));
         classrooms.add((Button)findViewById(R.id.C130));
@@ -110,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.C154));
         classrooms.add((Button)findViewById(R.id.C155));
         classrooms.add((Button)findViewById(R.id.C156));
-
         classrooms.add((Button)findViewById(R.id.D157));
         classrooms.add((Button)findViewById(R.id.D158));
         classrooms.add((Button)findViewById(R.id.D159));
@@ -125,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.D168));
         classrooms.add((Button)findViewById(R.id.D169));
         classrooms.add((Button)findViewById(R.id.D170));
-
         classrooms.add((Button)findViewById(R.id.E171));
         classrooms.add((Button)findViewById(R.id.E172));
         classrooms.add((Button)findViewById(R.id.E173));
@@ -133,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.E175));
         classrooms.add((Button)findViewById(R.id.E176));
         classrooms.add((Button)findViewById(R.id.E177));
-
         classrooms.add((Button)findViewById(R.id.F178));
         classrooms.add((Button)findViewById(R.id.F179));
         classrooms.add((Button)findViewById(R.id.F180));
@@ -146,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.F188));
         classrooms.add((Button)findViewById(R.id.F189));
         classrooms.add((Button) findViewById(R.id.F190));
+        // </editor-fold>
 
         int size = classrooms.size();
         buttons = classrooms;
@@ -177,6 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+
+
+
 
         dc= new DriveConnect();
         dc.execute(new FileWrapper(OpenFileDialog(),OpenotherFileDialog()));
@@ -229,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView classInfo = (TextView)popup.getContentView().findViewById(R.id.textView2);
         StringBuilder info = new StringBuilder("");
-        System.out.println(classInfo.getText());
         String[] teachers = dc.getRoomHandler().getTeachersInRoom(roomId);
         if (teachers == null) {
             classInfo.setText("Empty");
@@ -252,8 +265,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Displaying the popup at the specified location, + offsets.
         popup.showAtLocation(layout, Gravity.NO_GRAVITY, 700, 450);
-
-        System.out.println(p.x + " " + p.y);
 
     }
 
@@ -280,6 +291,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+
+
+    public int convertToInt(String id) {
+        if (id.length() != 3 && id.length() != 4) {
+            return -1;
+        }
+        if (id.length() == 4) {
+            id = id.substring(1);
+        }
+        if (id.equalsIgnoreCase("Gym")) {
+            return 77;
+        }
+        int result = Integer.valueOf(id);
+        result -= 100;
+        if (result >= 0 && result <= 90) {
+            return result;
+        }
+        return -1;
+
     }
 
     public InputStream OpenFileDialog(){
@@ -309,6 +341,77 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        final SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.searchView));
+        searchView = search;
+
+        int options = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            options = search.getImeOptions();
+        }
+        search.setImeOptions(options | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+
+        search.setQueryHint("Search");
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                search.clearFocus();
+                return false;
+            }
+        });
+        //*** setOnQueryTextFocusChangeListener ***
+        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        //*** setOnQueryTextListener ***
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // TODO Auto-generated method stub
+                currSearch.clear();
+                searchString = query;
+                ArrayList<Room> rooms = dc.getRoomHandler().getAllRooms();
+                if (prevSearch.size() != 0) {
+                    for (Button button : prevSearch) {
+
+                        button.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+                for (Room room : rooms) {
+                    if (room.contains(query)) {
+                        float[] hsv = {120, 100, 100};
+                        int id = convertToInt(room.getRoomNumber());
+                        if (id != -1) {
+                            buttons.get(id).setBackgroundColor(Color.HSVToColor(50, hsv));
+                            currSearch.add(buttons.get(id));
+                        } else {
+                        }
+                    }
+                }
+
+                prevSearch = (ArrayList<Button>) currSearch.clone();
+                search.clearFocus();
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // TODO Auto-generated method stub
+
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -320,18 +423,23 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            System.out.println("settings");
-            return true;
-        }
+
+
 
         if (id == R.id.second_floor) {
-            System.out.println("second floor");
-            Intent second = new Intent(this, SecondActivity.class);
+            Intent second = new Intent(this, SecondActivity.class).putExtra("Search", searchString);
+            System.out.println("First Check: " + searchString);
             startActivity(second);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        searchView.clearFocus();
+
     }
 
 }

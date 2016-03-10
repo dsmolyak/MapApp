@@ -1,6 +1,7 @@
 package com.example.dsmolyak.mapapp;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -17,12 +19,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.api.client.util.IOUtils;
+
+import org.mortbay.jetty.Main;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,8 +39,11 @@ import java.util.ArrayList;
 public class SecondActivity extends AppCompatActivity {
 
     ArrayList<Button> buttons;
+    ArrayList<Button> prevSearch = new ArrayList<Button>();
+    ArrayList<Button> currSearch = new ArrayList<Button>();
     ArrayList<Point> points;
     DriveConnect dc;
+    String stringSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 
@@ -92,13 +102,6 @@ public class SecondActivity extends AppCompatActivity {
                 }
             });
         }
-
-        dc = new DriveConnect();
-        dc.execute(new FileWrapper(OpenFileDialog(), OpenotherFileDialog()));
-
-
-
-
     }
 
     @Override
@@ -210,7 +213,101 @@ public class SecondActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_second_floor, menu);
+
+        dc = new DriveConnect();
+        dc.execute(new FileWrapper(OpenFileDialog(), OpenotherFileDialog()));
+
+        SearchManager searchManager = (SearchManager) SecondActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        final SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.searchView2));
+
+        int options = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            options = search.getImeOptions();
+        }
+        search.setImeOptions(options | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+
+        search.setQueryHint("Search");
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                search.clearFocus();
+                return false;
+            }
+        });
+        //*** setOnQueryTextFocusChangeListener ***
+        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        //*** setOnQueryTextListener ***
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // TODO Auto-generated method stub
+                currSearch.clear();
+                ArrayList<Room> rooms = dc.getRoomHandler().getAllRooms();
+                if (prevSearch.size() != 0) {
+                    for (Button button : prevSearch) {
+                        button.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+                for (Room room : rooms) {
+                    if (room.contains(query)) {
+                        float[] hsv = {120, 100, 100};
+                        int id = convertToInt(room.getRoomNumber());
+                        if (id != -1) {
+                            buttons.get(id).setBackgroundColor(Color.HSVToColor(50, hsv));
+                            currSearch.add(buttons.get(id));
+                        } else {
+                        }
+                    }
+                }
+
+                prevSearch = (ArrayList<Button>) currSearch.clone();
+                search.clearFocus();
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // TODO Auto-generated method stub
+
+                return false;
+            }
+        });
+
+        stringSearch = getIntent().getStringExtra("Search");
+        System.out.println("Second Check: " + stringSearch);
+        search.setQuery(stringSearch, true);
+
         return true;
+    }
+
+    public int convertToInt(String id) {
+        if (id.length() != 3 && id.length() != 4) {
+            return -1;
+        }
+        if (id.length() == 4) {
+            id = id.substring(1);
+        }
+        if (id.equalsIgnoreCase("Gym")) {
+            return -1;
+        }
+        int result = Integer.valueOf(id);
+        result -= 200;
+        if (result >= 0 && result <= 90) {
+            return result;
+        }
+        return -1;
+
     }
 
     @Override
@@ -220,14 +317,7 @@ public class SecondActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            System.out.println("settings");
-            return true;
-        }
-
         if (id == R.id.first_floor) {
-            System.out.println("first floor");
             Intent main = new Intent(this, MainActivity.class);
             startActivity(main);
         }

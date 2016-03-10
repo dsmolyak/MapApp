@@ -1,18 +1,24 @@
 package com.example.dsmolyak.mapapp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class RoomHandler {
 	private HashMap<String, Room> roomsToNumberMap;
 	private HashMap<String, String[]> superHash;
+	private ArrayList<Room> rooms = new ArrayList<Room>();
 	
 	public RoomHandler(){
 		roomsToNumberMap = new HashMap<String,Room>();
 	}
+	public ArrayList<Room> getAllRooms(){
+		return rooms;
+	}
 	public void addRoom(Room room) {
 
 		roomsToNumberMap.put(room.getRoomNumber(), room);
+		rooms.add(room);
 	}
 	public String[] getTeachersInRoom(String roomNumber){
 

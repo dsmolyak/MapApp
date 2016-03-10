@@ -2,8 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".SecondActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/first_floor" android:title="@string/first_floor"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/searchView2"
+        android:icon="@drawable/pepper_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="Search"/>
+    <item
+        android:id="@+id/first_floor"
+        android:orderInCategory="300"
+        android:title="User"
+        android:icon="@drawable/map_app_icon"
+        app:showAsAction="ifRoom" />
 </menu>

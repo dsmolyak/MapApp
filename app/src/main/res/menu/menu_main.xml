@@ -1,8 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_search" android:title="@string/action_search"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/second_floor" android:title="@string/second_floor"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/searchView"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="Search"/>
+    <item
+        android:id="@+id/second_floor"
+        android:orderInCategory="300"
+        android:title="User"
+        android:icon="@drawable/map_app_icon"
+        app:showAsAction="ifRoom" />
 </menu>
