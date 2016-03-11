@@ -80,7 +80,7 @@ public class DriveConnect extends AsyncTask<FileWrapper,Void,Void> {
 									hash.put("" + x, nextLine[x]);
 								}
 								
-								rh.addRoom(new Room(nextLine[0], hash));
+								rh.addRoom(new Room(nextLine[0], hash, nextLine));
 							}
 							rh.setSuperHash(superHash);
 							roomHandler=rh;
