@@ -22,17 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SearchActivity"
-            android:configChanges="orientation"
-            android:launchMode="singleTask"
-            android:parentActivityName="com.example.dsmolyak.mapapp.MainActivity"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateHidden">
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"></meta-data>
-        </activity>
-        <activity
             android:name=".SecondActivity"
             android:label="@string/title_activity_second"
             android:screenOrientation="landscape"

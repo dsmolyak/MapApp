@@ -6,31 +6,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.FloatMath;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.api.client.util.IOUtils;
 
@@ -53,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Button> currSearch = new ArrayList<Button>();
     ArrayList<Button> buttons;
     ArrayList<Point> points;
-    DriveConnect dc;
+    static DriveConnect dc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showPopup(final Activity context, Point p, int j) {
-
-
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
         int popupWidth = 500;
         int popupHeight = 375;
 
@@ -344,7 +337,8 @@ public class MainActivity extends AppCompatActivity {
 
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-        final SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.searchView));
+        final MenuItem searchMenuItem = menu.findItem(R.id.searchView);
+        final SearchView search = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView = search;
 
         int options = 0;
@@ -354,23 +348,6 @@ public class MainActivity extends AppCompatActivity {
         search.setImeOptions(options | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
         search.setQueryHint("Search");
-
-        search.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                search.clearFocus();
-                return false;
-            }
-        });
-        //*** setOnQueryTextFocusChangeListener ***
-        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
-            }
-        });
-
         //*** setOnQueryTextListener ***
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -411,7 +388,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         return true;
     }
 
@@ -435,11 +411,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        searchView.clearFocus();
-
-    }
 
 }

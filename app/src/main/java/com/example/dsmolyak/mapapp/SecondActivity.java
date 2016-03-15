@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,14 +23,6 @@ import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.api.client.util.IOUtils;
-
-import org.mortbay.jetty.Main;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class SecondActivity extends AppCompatActivity {
@@ -54,7 +43,7 @@ public class SecondActivity extends AppCompatActivity {
 
 
         final ArrayList<Button> classrooms = new ArrayList<>();
-
+// <editor-fold desc="Buttons">
         classrooms.add((Button)findViewById(R.id.G200));
         classrooms.add((Button)findViewById(R.id.G201));
         classrooms.add((Button)findViewById(R.id.G202));
@@ -71,6 +60,7 @@ public class SecondActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.G213));
         classrooms.add((Button)findViewById(R.id.G214));
         classrooms.add((Button)findViewById(R.id.G215));
+        // </editor-fold>
 
         int size = classrooms.size();
         buttons = classrooms;
@@ -85,13 +75,6 @@ public class SecondActivity extends AppCompatActivity {
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if (colored.get(j)) {
-//                        classrooms.get(j).setBackgroundColor(Color.LTGRAY);
-//                    }
-//                    else {
-//                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//                    colored.set(j, !colored.get(j));
 
 
                     //Open popup window
@@ -126,7 +109,8 @@ public class SecondActivity extends AppCompatActivity {
 
     private void showPopup(final Activity context, Point p, int j) {
 
-
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
         int popupWidth = 500;
         int popupHeight = 375;
 
@@ -134,8 +118,7 @@ public class SecondActivity extends AppCompatActivity {
 
         // Inflate the popup_layout.xml
         LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-        LayoutInflater layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
 
         // Creating the PopupWindow
@@ -186,36 +169,12 @@ public class SecondActivity extends AppCompatActivity {
         return result;
     }
 
-    public InputStream OpenFileDialog(){
-        Resources res = this.getResources();
-        InputStream in = res.openRawResource(R.raw.client_secret);
-        return in;
-    }
-    public File OpenotherFileDialog(){
-        try {
-            Resources res = this.getResources();
-            InputStream in = res.openRawResource(R.raw.my_project_70bcd65a0234);
-
-            final File tempFile = File.createTempFile("my_project_10bcd65a0234", ".p12");
-            tempFile.deleteOnExit();
-            FileOutputStream out = new FileOutputStream(tempFile);
-            IOUtils.copy(in, out);
-            return tempFile;
-
-        }
-        catch(IOException e){
-            System.out.println(e);
-            return null;
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_second_floor, menu);
 
-        dc = new DriveConnect();
-        dc.execute(new FileWrapper(OpenFileDialog(), OpenotherFileDialog()));
+        dc = MainActivity.dc;
 
         SearchManager searchManager = (SearchManager) SecondActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
@@ -287,6 +246,7 @@ public class SecondActivity extends AppCompatActivity {
         stringSearch = getIntent().getStringExtra("Search");
         System.out.println("Second Check: " + stringSearch);
         search.setQuery(stringSearch, true);
+        search.setIconified(false);
 
         return true;
     }
