@@ -390,9 +390,7 @@ public class FirstFloor extends AppCompatActivity {
             }
         });
 
-        received = getIntent().getStringExtra("Search");
-        System.out.println("Second Check: " + received);
-        search.setQuery(received, true);
+
 
 
         if (search != null) {
@@ -403,7 +401,16 @@ public class FirstFloor extends AppCompatActivity {
         search.setIconified(true);
         return true;
     }
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                received = data.getStringExtra("Search");
+                System.out.println("Second Check: " + received);
+                searchView.setQuery(received, true);
+            }
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -418,11 +425,20 @@ public class FirstFloor extends AppCompatActivity {
         if (id == R.id.second_floor) {
             Intent second = new Intent(this, SecondFloor.class).putExtra("Search", send);
             System.out.println("First Check: " + send);
-            startActivity(second);
+            startActivityForResult(second, 1);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        Intent intent = new Intent();
+        if(searchView.getQuery()!="") {
+            intent.putExtra("Search", searchView.getQuery());
+            setResult(RESULT_OK, intent);
+        }
+    }
 }
