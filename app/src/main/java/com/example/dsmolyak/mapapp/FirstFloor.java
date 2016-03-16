@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,12 +34,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class FirstFloor extends AppCompatActivity {
 
     private static final String TAG = "tag";
     ImageView image;
     SearchView searchView;
-    String searchString;
+    String send;
+    String received;
 
     //The "x" and "y" position of the "Show Button" on screen.
 
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Open popup window
                     if (points.get(j) != null) {
-                        showPopup(MainActivity.this, points.get(j), j);
+                        showPopup(FirstFloor.this, points.get(j), j);
                     }
 
                 }
@@ -184,10 +186,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-        dc= new DriveConnect();
-        dc.execute(new FileWrapper(OpenFileDialog(),OpenotherFileDialog()));
-
+        if (dc == null) {
+            dc = new DriveConnect();
+            dc.execute(new FileWrapper(OpenFileDialog(), OpenotherFileDialog()));
+        }
     }
 
     @Override
@@ -335,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) FirstFloor.this.getSystemService(Context.SEARCH_SERVICE);
 
         final MenuItem searchMenuItem = menu.findItem(R.id.searchView);
         final SearchView search = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
@@ -355,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // TODO Auto-generated method stub
                 currSearch.clear();
-                searchString = query;
+                send = query;
                 ArrayList<Room> rooms = dc.getRoomHandler().getAllRooms();
                 if (prevSearch.size() != 0) {
                     for (Button button : prevSearch) {
@@ -376,7 +378,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 prevSearch = (ArrayList<Button>) currSearch.clone();
-                search.clearFocus();
 
                 return false;
             }
@@ -388,6 +389,18 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        received = getIntent().getStringExtra("Search");
+        System.out.println("Second Check: " + received);
+        search.setQuery(received, true);
+
+
+        if (search != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+            System.out.println("IWENTHERE1");
+        }
+        search.setIconified(true);
         return true;
     }
 
@@ -403,8 +416,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (id == R.id.second_floor) {
-            Intent second = new Intent(this, SecondActivity.class).putExtra("Search", searchString);
-            System.out.println("First Check: " + searchString);
+            Intent second = new Intent(this, SecondFloor.class).putExtra("Search", send);
+            System.out.println("First Check: " + send);
             startActivity(second);
         }
 

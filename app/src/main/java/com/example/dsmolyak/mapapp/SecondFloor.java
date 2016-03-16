@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -25,14 +26,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondFloor extends AppCompatActivity {
 
     ArrayList<Button> buttons;
     ArrayList<Button> prevSearch = new ArrayList<Button>();
     ArrayList<Button> currSearch = new ArrayList<Button>();
     ArrayList<Point> points;
     DriveConnect dc;
-    String stringSearch;
+    String received;
+    String send;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +52,13 @@ public class SecondActivity extends AppCompatActivity {
         classrooms.add((Button)findViewById(R.id.G202));
         classrooms.add((Button)findViewById(R.id.G203));
         classrooms.add((Button)findViewById(R.id.G204));
-        classrooms.add((Button)findViewById(R.id.G205));
-        classrooms.add((Button)findViewById(R.id.G206));
-        classrooms.add((Button)findViewById(R.id.G207));
-        classrooms.add((Button)findViewById(R.id.G208));
-        classrooms.add((Button)findViewById(R.id.G209));
+        classrooms.add((Button) findViewById(R.id.G205));
+        classrooms.add((Button) findViewById(R.id.G206));
+        classrooms.add((Button) findViewById(R.id.G207));
+        classrooms.add((Button) findViewById(R.id.G208));
+        classrooms.add((Button) findViewById(R.id.G209));
         classrooms.add((Button)findViewById(R.id.G210));
-        classrooms.add((Button)findViewById(R.id.G211));
+        classrooms.add((Button) findViewById(R.id.G211));
         classrooms.add((Button)findViewById(R.id.G212));
         classrooms.add((Button)findViewById(R.id.G213));
         classrooms.add((Button)findViewById(R.id.G214));
@@ -79,7 +82,7 @@ public class SecondActivity extends AppCompatActivity {
 
                     //Open popup window
                     if (points.get(j) != null) {
-                        showPopup(SecondActivity.this, points.get(j), j);
+                        showPopup(SecondFloor.this, points.get(j), j);
                     }
 
                 }
@@ -174,11 +177,12 @@ public class SecondActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_second_floor, menu);
 
-        dc = MainActivity.dc;
+        dc = FirstFloor.dc;
 
-        SearchManager searchManager = (SearchManager) SecondActivity.this.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) SecondFloor.this.getSystemService(Context.SEARCH_SERVICE);
 
         final SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.searchView2));
+        searchView = search;
 
         int options = 0;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -211,6 +215,7 @@ public class SecondActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // TODO Auto-generated method stub
                 currSearch.clear();
+                send = query;
                 ArrayList<Room> rooms = dc.getRoomHandler().getAllRooms();
                 if (prevSearch.size() != 0) {
                     for (Button button : prevSearch) {
@@ -230,7 +235,6 @@ public class SecondActivity extends AppCompatActivity {
                 }
 
                 prevSearch = (ArrayList<Button>) currSearch.clone();
-                search.clearFocus();
 
                 return false;
             }
@@ -243,11 +247,17 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
 
-        stringSearch = getIntent().getStringExtra("Search");
-        System.out.println("Second Check: " + stringSearch);
-        search.setQuery(stringSearch, true);
-        search.setIconified(false);
+        received = getIntent().getStringExtra("Search");
+        System.out.println("Second Check: " + received);
+        search.setQuery(received, true);
 
+
+        if (search != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+            System.out.println("IWENTHERE2");
+        }
+        search.setIconified(true);
         return true;
     }
 
@@ -278,8 +288,10 @@ public class SecondActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.first_floor) {
-            Intent main = new Intent(this, MainActivity.class);
+            Intent main = new Intent(this, FirstFloor.class).putExtra("Search", send);
+            System.out.println("First Check: " + send);
             startActivity(main);
+
         }
 
         return super.onOptionsItemSelected(item);

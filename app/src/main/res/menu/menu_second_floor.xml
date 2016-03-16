@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".SecondActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".SecondFloor">
     <item
         android:id="@+id/searchView2"
-        android:icon="@drawable/pepper_search"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView"
         android:title="Search"/>
@@ -12,6 +11,6 @@
         android:id="@+id/first_floor"
         android:orderInCategory="300"
         android:title="User"
-        android:icon="@drawable/map_app_icon"
+        android:icon="@drawable/down_arrow"
         app:showAsAction="ifRoom" />
 </menu>
