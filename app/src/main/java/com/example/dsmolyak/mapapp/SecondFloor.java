@@ -5,20 +5,26 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
@@ -26,7 +32,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class SecondFloor extends AppCompatActivity {
+public class SecondFloor extends AppCompatActivity implements View.OnTouchListener {
 
     ArrayList<Button> buttons;
     ArrayList<Button> prevSearch = new ArrayList<Button>();
@@ -36,6 +42,10 @@ public class SecondFloor extends AppCompatActivity {
     String received;
     String send;
     SearchView searchView;
+    private ScaleGestureDetector mScaleDetector;
+    Button change;
+    int changeColor;
+    PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +53,6 @@ public class SecondFloor extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 // <editor-fold desc="Buttons">
@@ -68,6 +77,8 @@ public class SecondFloor extends AppCompatActivity {
         int size = classrooms.size();
         buttons = classrooms;
 
+        changeColor = Color.TRANSPARENT;
+
         final ArrayList<Boolean> colored = new ArrayList<Boolean>();
         for (int i = 0; i < size; i++) {
             colored.add(true);
@@ -79,15 +90,39 @@ public class SecondFloor extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
+                    float[] hsv = {206, 100, 100};
 
-                    //Open popup window
-                    if (points.get(j) != null) {
-                        showPopup(SecondFloor.this, points.get(j), j);
-                    }
+                    showPopup(SecondFloor.this, j);
+                    classrooms.get(j).setBackgroundColor(Color.HSVToColor(50, hsv));
+
 
                 }
             });
         }
+
+        mScaleDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.OnScaleGestureListener() {
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+            }
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                return true;
+            }
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+//                Log.d(LOG_KEY, "zoom ongoing, scale: " + detector.getScaleFactor());
+                System.out.println("That's a god question");
+                return false;
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mScaleDetector.onTouchEvent(event);
+        System.out.println("Bob Saget");
+        return true;
     }
 
     @Override
@@ -108,9 +143,15 @@ public class SecondFloor extends AppCompatActivity {
             p.y = location[1];
             points.add(p);
         }
+
+        if (change != null && !popupWindow.isShowing()) {
+            change.setBackgroundColor(changeColor);
+        }
     }
 
-    private void showPopup(final Activity context, Point p, int j) {
+    private void showPopup(final Activity context, int j) {
+
+
 
         searchView.setQuery("", false);
         searchView.setIconified(true);
@@ -118,6 +159,17 @@ public class SecondFloor extends AppCompatActivity {
         int popupHeight = 375;
 
         String roomId = convertToId(j);
+
+        Button button = buttons.get(j);
+        if (button != null) {
+            change = button;
+            if (button.getBackground() != null) {
+                changeColor = ((ColorDrawable) button.getBackground()).getColor();
+            }
+            else {
+                changeColor = Color.TRANSPARENT;
+            }
+        }
 
         // Inflate the popup_layout.xml
         LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
@@ -142,15 +194,7 @@ public class SecondFloor extends AppCompatActivity {
             classInfo.setText("Empty");
         }
         else {
-            for (int i = 0; i < teachers.length; i++) {
-                String teacher = teachers[i];
-                if (teacher == "" || teacher == null) {
-                    info.append("Period " + (i + 1) + ": Planning" + "\n");
-                }
-                else {
-                    info.append("Period " + (i + 1) + ": " + teacher + "\n");
-                }
-            }
+            setSchedule(info, teachers);
             classInfo.setText(info.toString());
         }
 
@@ -164,6 +208,34 @@ public class SecondFloor extends AppCompatActivity {
         // Displaying the popup at the specified location, + offsets.
         popup.showAtLocation(layout, Gravity.NO_GRAVITY, 1100, 450);
 
+        popupWindow = popup;
+
+    }
+
+    private void setSchedule(StringBuilder info, String[] teachers) {
+        for (int i = 0; i < teachers.length; i++) {
+            String teacher = teachers[i];
+            String periodNumber;
+            if (i < 3) {
+                periodNumber = (i + 1) + "";
+            }
+            else if (i == 3) {
+                periodNumber = (i + 1) + "A";
+            }
+            else if (i == 4) {
+                periodNumber = (i) + "B";
+            }
+            else {
+                periodNumber = i + "";
+            }
+            info.append("Period " + periodNumber + ": ");
+            if (teacher == "" || teacher == null) {
+                info.append("Planning" + "\n");
+            }
+            else {
+                info.append(teacher + "\n");
+            }
+        }
     }
 
     private String convertToId(int j) {
@@ -195,7 +267,7 @@ public class SecondFloor extends AppCompatActivity {
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                search.clearFocus();
+
                 return false;
             }
         });
@@ -222,18 +294,23 @@ public class SecondFloor extends AppCompatActivity {
                         button.setBackgroundColor(Color.TRANSPARENT);
                     }
                 }
+                int counter = 0;
+                int roomId = 0;
                 for (Room room : rooms) {
                     if (room.contains(query)) {
+                        counter++;
+                        roomId = convertToInt(room.getRoomNumber());
                         float[] hsv = {120, 100, 100};
                         int id = convertToInt(room.getRoomNumber());
                         if (id != -1) {
                             buttons.get(id).setBackgroundColor(Color.HSVToColor(50, hsv));
                             currSearch.add(buttons.get(id));
-                        } else {
                         }
                     }
                 }
-
+                if (counter == 1){
+                    showPopup(SecondFloor.this,roomId);
+                }
                 prevSearch = (ArrayList<Button>) currSearch.clone();
 
                 return false;
@@ -252,13 +329,28 @@ public class SecondFloor extends AppCompatActivity {
         search.setQuery(received, true);
 
 
-        if (search != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
-            System.out.println("IWENTHERE2");
-        }
+
+
         search.setIconified(true);
+        search.clearFocus();
+
+//        if (search != null) {
+//            hideSoftKeyboard(this);
+//            System.out.println("IWENTHERE2");
+//        }
+
         return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                received = data.getStringExtra("Search");
+                System.out.println("Second Check: " + received);
+                searchView.setQuery(received, true);
+            }
+        }
     }
 
     public int convertToInt(String id) {
@@ -288,13 +380,34 @@ public class SecondFloor extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.first_floor) {
-            Intent main = new Intent(this, FirstFloor.class).putExtra("Search", send);
+            Intent first = new Intent(this, FirstFloor.class).putExtra("Search", send);
             System.out.println("First Check: " + send);
-            startActivity(main);
+            startActivityForResult(first, 1);
+            startActivity(first);
+        }
 
+        if (id == R.id.help) {
+            Intent help = new Intent(this, HelpActivity.class);
+            startActivity(help);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        Intent intent = new Intent();
+        if(searchView.getQuery()!="") {
+            intent.putExtra("Search",send);
+            setResult(RESULT_OK, intent);
+            System.out.println("Stop having it be closed");
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
 }

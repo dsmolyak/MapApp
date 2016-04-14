@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".HelpActivity">
+    <item
+        android:id="@+id/first_floor"
+        android:title="User"
+        android:icon="@drawable/ic_arrow_downward_black_24dp"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/pad1"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_translate_black_24dp"
+        android:title="Help"/>
+    <item
+        android:id="@+id/second_floor"
+        android:title="User"
+        android:icon="@drawable/ic_arrow_upward_black_24dp"
+        app:showAsAction="ifRoom" />
+</menu>

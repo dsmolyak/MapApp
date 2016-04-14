@@ -8,9 +8,24 @@
         app:actionViewClass="android.widget.SearchView"
         android:title="Search"/>
     <item
+        android:id="@+id/pad1"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_translate_black_24dp"
+        android:title="Help"/>
+    <item
+        android:id="@+id/help"
+        app:showAsAction="always"
+        android:icon="@drawable/help_icon"
+        android:title="Help"/>
+    <item
+        android:id="@+id/pad2"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_translate_black_24dp"
+        android:title="Help"/>
+    <item
         android:id="@+id/first_floor"
         android:orderInCategory="300"
         android:title="User"
-        android:icon="@drawable/down_arrow"
+        android:icon="@drawable/ic_arrow_downward_black_24dp"
         app:showAsAction="ifRoom" />
 </menu>

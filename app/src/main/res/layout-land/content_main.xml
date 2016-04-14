@@ -21,7 +21,8 @@
             android:layout_height="wrap_content" >
 
 
-            <RelativeLayout
+            <com.example.dsmolyak.mapapp.ZoomableRelativeLayout
+                android:id="@+id/layout"
                 android:gravity="top"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
@@ -1568,7 +1569,7 @@
                     android:scaleType="matrix"
                     android:adjustViewBounds="true"/>
 
-            </RelativeLayout>
+            </com.example.dsmolyak.mapapp.ZoomableRelativeLayout>
         </HorizontalScrollView>
     </ScrollView>
 </RelativeLayout>

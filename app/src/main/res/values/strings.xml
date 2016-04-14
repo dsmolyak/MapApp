@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">Map App</string>
+    <string name="app_name">MapApp</string>
     <string name="action_search">Search</string>
     <string name="second_floor">Second Floor</string>
     <string name="first_floor">First Floor</string>
     <string name="title_activity_second">Second Floor</string>
     <string name="classroom_example">Period 1: Empty \n Period 2: Empty \n Period 3: Empty</string>
+    <string name="title_activity_help">MapApp Help</string>
+    <string name="help_text">This is the help menu!!!!!!! \n\n Thank you for choosing MapApp!!!!!!! \n\n To get the room\'s schedule, click on the room.  This will tell you what teachers are in this room during all periods. \n\n You can search for rooms or teachers using the search function.  This will cause the rooms to glow if it is associated with that number or teacher. \n\n The up arrow in the corner will take you to the second floor.  All functions on the second floor are identical to the first.  To go back to the first floor, click the down arrow.\n\n Have a school day!!!!!!!! </string>
 </resources>
