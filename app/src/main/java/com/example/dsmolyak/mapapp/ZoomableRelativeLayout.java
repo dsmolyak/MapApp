@@ -33,7 +33,7 @@ public class ZoomableRelativeLayout extends RelativeLayout {
         // TODO Auto-generated constructor stub
     }
 
-    protected void onDispatch(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.scale(mScaleFactor, mScaleFactor, mPivotX, mPivotY);
         super.dispatchDraw(canvas);
@@ -48,7 +48,7 @@ public class ZoomableRelativeLayout extends RelativeLayout {
     }
 
     public void restore() {
-        mScaleFactor = 1;
+        mScaleFactor = 2;
         this.invalidate();
     }
 
@@ -56,13 +56,11 @@ public class ZoomableRelativeLayout extends RelativeLayout {
     {
         mScaleFactor *= scaleFactor;
 
-        if(scaleFactor >= 1)
-        {
+        if(scaleFactor >= 1) {
             mPivotX = mPivotX + (pivotX - mPivotX) * (1 - 1 / scaleFactor);
             mPivotY = mPivotY + (pivotY - mPivotY) * (1 - 1 / scaleFactor);
         }
-        else
-        {
+        else {
             pivotX = getWidth()/2;
             pivotY = getHeight()/2;
 

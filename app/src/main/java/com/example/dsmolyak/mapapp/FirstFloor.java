@@ -1,12 +1,13 @@
 package com.example.dsmolyak.mapapp;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -23,12 +24,14 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -36,8 +39,6 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.util.IOUtils;
-
-import org.mortbay.jetty.handler.HandlerList;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,10 +51,15 @@ public class FirstFloor extends AppCompatActivity {
     SearchView searchView;
     String send;
     String received;
-    ZoomableRelativeLayout mZoomableRelativeLayout;
     Button change;
     int changeColor;
     PopupWindow popupWindow;
+    RelativeLayout relativeLayout;
+    ScrollView scroll;
+    HorizontalScrollView horizontalScrollView;
+    FrameLayout.LayoutParams layoutParams;
+    float totalScaleFactor;
+    boolean[] isBlue;
 
 
     //The "x" and "y" position of the "Show Button" on screen.
@@ -61,7 +67,6 @@ public class FirstFloor extends AppCompatActivity {
     ArrayList<Button> prevSearch = new ArrayList<Button>();
     ArrayList<Button> currSearch = new ArrayList<Button>();
     ArrayList<Button> buttons;
-    ArrayList<Point> points;
     ScaleGestureDetector scaleGestureDetector;
     static DriveConnect dc;
     /**
@@ -77,20 +82,25 @@ public class FirstFloor extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ArrayList<Button> classrooms = new ArrayList<>();
+        relativeLayout = (RelativeLayout) findViewById(R.id.superamazinrelativelayoutmegazord);
+        scroll = (ScrollView) findViewById(R.id.scrollView1);
+        horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView1);
 
-        mZoomableRelativeLayout = (ZoomableRelativeLayout) findViewById(R.id.layout);
+        totalScaleFactor = 1;
+
+        final ArrayList<Button> classrooms = new ArrayList<>();
 
         changeColor = Color.TRANSPARENT;
 
         scaleGestureDetector = new ScaleGestureDetector(this, new OnPinchListener());
 
-        mZoomableRelativeLayout.setOnTouchListener(new View.OnTouchListener() {
+        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 scaleGestureDetector.onTouchEvent(event);
+
                 return true;
             }
         });
@@ -189,36 +199,18 @@ public class FirstFloor extends AppCompatActivity {
         classrooms.add((Button) findViewById(R.id.F190));
         // </editor-fold>
 
-        int size = classrooms.size();
         buttons = classrooms;
-
-        final ArrayList<Boolean> colored = new ArrayList<Boolean>();
-        for (int i = 0; i < size; i++) {
-            colored.add(true);
-//            buttons.get(i).setBackgroundColor(Color.MAGENTA);
-        }
+        isBlue = new boolean[classrooms.size()];
+        final float[] hsv = {206, 100, 100};
 
         for (int i = 0; i < classrooms.size(); i++) {
             final int j = i;
             classrooms.get(j).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    float[] hsv = {206, 100, 100};
-
                     showPopup(FirstFloor.this, j);
                     classrooms.get(j).setBackgroundColor(Color.HSVToColor(50, hsv));
-
-//                    if (colored.get(j)) {
-//                        classrooms.get(j).setBackgroundColor(Color.HSVToColor(50, hsv));
-//                    }
-//                    else {
-//                        classrooms.get(j).setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//                    colored.set(j, !colored.get(j));
-
-
-                    //Open popup window
-
+                    isBlue[j] = true;
 
                 }
             });
@@ -240,22 +232,17 @@ public class FirstFloor extends AppCompatActivity {
 
         int[] location = new int[2];
 
-        points = new ArrayList<Point>();
+        float[] hsv = {206, 100, 100};
 
-        for (Button button : buttons) {
-            // Get the x, y location and store it in the location[] array
-            // location[0] = x, location[1] = y.
-            button.getLocationOnScreen(location);
-
-            //Initialize the Point with x, and y positions
-            Point p = new Point();
-            p.x = location[0];
-            p.y = location[1];
-            points.add(p);
-
-        }
         if (change != null && !popupWindow.isShowing()) {
             change.setBackgroundColor(changeColor);
+//            for (int i = 0; i < isBlue.length; i++) {
+//                if (isBlue[i] == true) {
+//                    buttons.get(i).setBackgroundColor();
+//                }
+//            }
+
+
         }
     }
 
@@ -274,8 +261,7 @@ public class FirstFloor extends AppCompatActivity {
             change = button;
             if (button.getBackground() != null) {
                 changeColor = ((ColorDrawable) button.getBackground()).getColor();
-            }
-            else {
+            } else {
                 changeColor = Color.TRANSPARENT;
             }
         }
@@ -405,30 +391,68 @@ public class FirstFloor extends AppCompatActivity {
 
     private class OnPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         float currentSpan;
-        float startFocusX;
-        float startFocusY;
+        float lastScaleFactor = 1f;
+        float lastSpan = 1f;
+        float slope = 3f/1750f;
+        ImageView uhhhhh = (ImageView) findViewById(R.id.imageView1);
+        float originalImageWidth , originalImageHeight ;
+        float newImageWidth, newImageHeight;
+
 
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            currentSpan = detector.getCurrentSpan();
-            startFocusX = detector.getFocusX();
-            startFocusY = detector.getFocusY();
+            System.out.println(findViewById(R.id.superamazinrelativelayoutmegazord).getWidth());
+            lastScaleFactor = 1f;
+            lastSpan = detector.getCurrentSpan();
+            System.out.println("Start Span: " + lastSpan);
+            totalScaleFactor = 1f;
+
             return true;
         }
 
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
         public boolean onScale(ScaleGestureDetector detector) {
-//            ZoomableRelativeLayout zoomableRelativeLayout = (ZoomableRelativeLayout) findViewById(R.id.layout);
 
-            mZoomableRelativeLayout.relativeScale(detector.getCurrentSpan() / currentSpan, startFocusX, startFocusY);
-
+//            System.out.println("Span:"+detector.getCurrentSpan());
+//            System.out.println("raw Scale"+detector.getScaleFactor());
             currentSpan = detector.getCurrentSpan();
+            lastScaleFactor = 1 + slope * (currentSpan - lastSpan);
+            lastSpan = currentSpan/lastScaleFactor;
+            System.out.println("Scale Factor: " + lastScaleFactor);
 
+            System.out.println("Current Span: " + currentSpan);
+            System.out.println("Last :"+lastSpan);
+
+
+//            totalScaleFactor += currentSpan - 1;
+//            lastScaleFactor = ((lastScaleFactor + (currentSpan / lastSpan)) / 2f);
+
+//            System.out.println("Scale"+lastScaleFactor);
+            relativeLayout.setScaleX(lastScaleFactor);
+            relativeLayout.setScaleY(lastScaleFactor);
+            if (layoutParams == null) {
+                layoutParams = new FrameLayout.LayoutParams(relativeLayout.getWidth(), relativeLayout.getHeight());
+
+            }
+//            System.out.println("Height: " + uhhhhh.getHeight());
+//            System.out.println("Width: " + uhhhhh.getWidth());
             return true;
         }
 
         public void onScaleEnd(ScaleGestureDetector detector) {
-//            ZoomableRelativeLayout zoomableRelativeLayout = (ZoomableRelativeLayout) findViewById(R.id.layout);
+//            System.out.println("new scale" + lastScaleFactor);
+            if(originalImageHeight==0f){
+                originalImageHeight=uhhhhh.getHeight();
+                originalImageWidth=uhhhhh.getWidth();
+//                System.out.println("Height: " + uhhhhh.getHeight());
+//                System.out.println("Width: " + uhhhhh.getWidth());
+            }
+            newImageHeight = originalImageHeight * lastScaleFactor;
+            newImageWidth = originalImageWidth * lastScaleFactor;
+            System.out.println("Old Height "+originalImageHeight+" Old Width "+originalImageWidth+" \nNew Height "+newImageHeight+" New Width "+newImageWidth);
+            layoutParams.setMargins((int) ((newImageWidth - originalImageWidth) / 2), (int)(/*layoutParams.topMargin*/+ (newImageHeight - originalImageHeight)/2), -1 * (int)((newImageWidth - originalImageWidth) / 2), (int) (/*layoutParams.bottomMargin +*/ (newImageHeight - originalImageHeight)/2));
+            relativeLayout.setLayoutParams(layoutParams);
+            //relativeLayout.setTranslationX(-1*(newImageWidth - originalImageWidth) / 2);
 
-            mZoomableRelativeLayout.release();
         }
     }
 
@@ -502,8 +526,8 @@ public class FirstFloor extends AppCompatActivity {
                         }
                     }
                 }
-                if (counter == 1){
-                    showPopup(FirstFloor.this,roomId);
+                if (counter == 1) {
+                    showPopup(FirstFloor.this, roomId);
                 }
                 prevSearch = (ArrayList<Button>) currSearch.clone();
 

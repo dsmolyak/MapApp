@@ -1,5 +1,6 @@
 package com.example.dsmolyak.mapapp;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +26,13 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -47,12 +53,38 @@ public class SecondFloor extends AppCompatActivity implements View.OnTouchListen
     int changeColor;
     PopupWindow popupWindow;
 
+    RelativeLayout relativeLayout;
+    ScrollView scroll;
+    HorizontalScrollView horizontalScrollView;
+    FrameLayout.LayoutParams layoutParams;
+    float totalScaleFactor;
+    ScaleGestureDetector scaleGestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        relativeLayout = (RelativeLayout) findViewById(R.id.fitsIsit);
+        scroll = (ScrollView) findViewById(R.id.scrollView2);
+        horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView2);
+
+        totalScaleFactor = 1;
+
+        scaleGestureDetector = new ScaleGestureDetector(this.getBaseContext(), new OnPinchListener());
+
+        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                scaleGestureDetector.onTouchEvent(event);
+
+                return true;
+            }
+        });
 
         final ArrayList<Button> classrooms = new ArrayList<>();
 // <editor-fold desc="Buttons">
@@ -403,6 +435,59 @@ public class SecondFloor extends AppCompatActivity implements View.OnTouchListen
             intent.putExtra("Search",send);
             setResult(RESULT_OK, intent);
             System.out.println("Stop having it be closed");
+        }
+    }
+
+    private class OnPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        float currentSpan;
+        float lastScaleFactor;
+        float lastSpan = 1f;
+        ImageView uhhhhh = (ImageView) findViewById(R.id.imageView2);
+        float originalImageWidth , originalImageHeight ;
+        float newImageWidth, newImageHeight;
+
+
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            lastScaleFactor = 1f;
+            lastSpan = detector.getCurrentSpan();
+            System.out.println("Start Span: " + lastSpan);
+            totalScaleFactor = 1f;
+
+            return true;
+        }
+
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+        public boolean onScale(ScaleGestureDetector detector) {
+
+
+            currentSpan = detector.getCurrentSpan();
+            lastScaleFactor = ((lastScaleFactor + (currentSpan / lastSpan)) / 2f);
+            relativeLayout.setScaleX(lastScaleFactor);
+            relativeLayout.setScaleY(lastScaleFactor);
+            if (layoutParams == null) {
+                layoutParams = new FrameLayout.LayoutParams(relativeLayout.getWidth(), relativeLayout.getHeight());
+            }
+            return true;
+        }
+
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            System.out.println("Final Span: " + currentSpan);
+//            System.out.println("new scale" + lastScaleFactor);
+            if(originalImageHeight==0f){
+                originalImageHeight=uhhhhh.getHeight();
+                originalImageWidth=uhhhhh.getWidth();
+//                System.out.println("Height: " + uhhhhh.getHeight());
+//                System.out.println("Width: " + uhhhhh.getWidth());
+            }
+            newImageHeight = originalImageHeight * lastScaleFactor;
+            newImageWidth = originalImageWidth * lastScaleFactor;
+//            System.out.println("Old Height "+originalImageHeight+" Old Width "+originalImageWidth+" \nNew Height "+newImageHeight+" New Width "+newImageWidth);
+            layoutParams.setMargins((int) ((newImageWidth - originalImageWidth) / 2), (int)(/*layoutParams.topMargin*/+ (newImageHeight - originalImageHeight)/2),(int) ((newImageWidth - originalImageWidth) / 2), (int) (/*layoutParams.bottomMargin +*/ (newImageHeight - originalImageHeight)/2));
+            relativeLayout.setLayoutParams(layoutParams);
+            //relativeLayout.setTranslationX(-1*(newImageWidth - originalImageWidth) / 2);
+
+//            System.out.println("Scroll Height: " + scroll.getHeight());
+//            System.out.println("Scroll Width: " + scroll.getWidth());
         }
     }
 
